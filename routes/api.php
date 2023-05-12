@@ -15,10 +15,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'jwt'], function () {
+    Route::post('/assignRole', [UserController::class, 'assignRole'])->name('assignRole');
+    Route::post('/unassignRole', [UserController::class, 'unassignRole'])->name('unassignRole');
 });
 Route::post('/signup', [UserController::class, 'signup'])->name('signup');
 Route::post('/verifyOtp', [UserController::class, 'verifyOtp'])->name('verifyOtp');
 Route::post('/login', [UserController::class, 'login'])->name('login');
-
