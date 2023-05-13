@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Device;
 use App\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -96,7 +98,7 @@ class UserController extends Controller
             return response()->json(['error' => 'An error occurred during login'], 500);
         }
     }
-    public function assignRole(Request $request)
+    public function assignRole($request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
@@ -107,25 +109,33 @@ class UserController extends Controller
         }
         try {
             DB::beginTransaction();
-            if($request->role_id){
+            if ($request->role_id === 1) {
                 return response()->json(['error' => 'The role is not allowed to assign any user'], 403);
             }
             $check = DB::table('role_user')->where('user_id', $request->user_id)->where('role_id', $request->role_id)->get();
-            if(!$check->isEmpty()){
+            if (!$check->isEmpty()) {
                 return response()->json(['error' => 'The role is already assigned to this user'], 403);
             }
             $user = User::where('id', $request->user_id)->first();
             $role = Role::where('id', $request->role_id)->first();
-            $user->roles()->attach($role);
-            DB::commit();
-            return response()->json(['success' => true, 'message' => 'Role assign successfully']);
+            $currentTimestamp = Carbon::now();
+            if ($user && $role) {
+                DB::table('role_user')->insert([
+                    'user_id' => $user->id,
+                    'role_id' => $role->id,
+                    'created_at' => $currentTimestamp,
+                    'updated_at' => $currentTimestamp,
+                ]);
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Role assign successfully']);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'An error occurred during assign role'], 500);
         }
     }
 
-    public function unassignRole(Request $request)
+    public function unassignRole($request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
@@ -136,21 +146,54 @@ class UserController extends Controller
         }
         try {
             DB::beginTransaction();
-            if($request->role_id){
+            if ($request->role_id === 1) {
                 return response()->json(['error' => 'The role is not allowed to unassign'], 403);
             }
             $check = DB::table('role_user')->where('user_id', $request->user_id)->where('role_id', $request->role_id)->get();
-            if($check->isEmpty()){
+            if ($check->isEmpty()) {
                 return response()->json(['error' => 'The role is not assigned to this user'], 403);
             }
             $user = User::where('id', $request->user_id)->first();
             $role = Role::where('id', $request->role_id)->first();
-            $user->roles()->detach($role);
+            $currentTimestamp = Carbon::now();
+            if ($user && $role) {
+                DB::table('role_user')->insert([
+                    'user_id' => $user->id,
+                    'role_id' => $role->id,
+                    'created_at' => $currentTimestamp,
+                    'updated_at' => $currentTimestamp,
+                ]);
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Role detach successfully']);
+            }
             DB::commit();
-            return response()->json(['success' => true, 'message' => 'Role detach successfully']);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'An error occurred during assign role'], 500);
         }
+    }
+    public function createDevice($request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+        try {
+            DB::beginTransaction();
+            $device = new Device();
+            $userId = Auth::id();
+            $device->name = $request->name;
+            $device->user_id = $userId;
+            $device->save();
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Device created successfully']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred during creation of device'], 500);
+        }
+
     }
 }

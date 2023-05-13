@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Traits\RoleTrait;
+use App\Traits\PermissionTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -52,9 +54,5 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
     }
 }

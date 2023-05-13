@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\APIRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +17,9 @@ use App\Http\Controllers\UserController;
 */
 
 Route::group(['middleware' => 'jwt'], function () {
-    Route::post('/assignRole', [UserController::class, 'assignRole'])->name('assignRole');
-    Route::post('/unassignRole', [UserController::class, 'unassignRole'])->name('unassignRole');
+    Route::post('/assignRole', [APIRoleController::class, 'assignRole'])->name('assignRole');
+    Route::post('/unassignRole', [APIRoleController::class, 'unassignRole'])->name('unassignRole');
+    Route::post('/createDevice', [APIRoleController::class, 'createDevice'])->name('createDevice');
 });
 Route::post('/signup', [UserController::class, 'signup'])->name('signup');
 Route::post('/verifyOtp', [UserController::class, 'verifyOtp'])->name('verifyOtp');

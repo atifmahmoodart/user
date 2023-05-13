@@ -1,17 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use App\Helpers;
 
 class APIPermissionController extends Controller
 {
-    public function checkPermission(Request $request)
+    public function createDevice($request)
     {
-        $user = $request->user();
-        $permission = 'edit_post';
-        if ($user->can($permission)) {
-            return response()->json(['message' => 'Permission granted']);
+        $permission = 'Create Device';
+        $result = Helpers\hasPermission($permission);
+        if ($result) {
+            return app(UserController::class)->createDevice($request);
         }
         return response()->json(['message' => 'Permission denied'], 403);
     }
