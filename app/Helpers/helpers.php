@@ -31,7 +31,7 @@ if (!function_exists('hasPermission')) {
         $permissionId = Permission::where('name', $permission)->pluck('id');
         $results = DB::table('users')
             ->join('user_permissions', 'users.id', '=', 'user_permissions.user_id')
-            ->where('user_permissions.pemission_id', $permissionId)
+            ->where('user_permissions.permission_id', $permissionId)
             ->where('user_permissions.user_id', $user->id)
             ->get();
         if (!$results->isEmpty()) {
