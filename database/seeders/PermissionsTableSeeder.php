@@ -14,22 +14,24 @@ class PermissionsTableSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            ['name' => 'Root Node', 'guard_name' => 'web'],
-            ['name' => 'Add Node', 'guard_name' => 'web'],
-            ['name' => 'Update Node', 'guard_name' => 'web'],
-            ['name' => 'Delete Node', 'guard_name' => 'web'],
-            ['name' => 'Assign Node', 'guard_name' => 'web'],
-            ['name' => 'Unassign Node', 'guard_name' => 'web'],
-            ['name' => 'Create Device', 'guard_name' => 'web'],
-            ['name' => 'Update Device', 'guard_name' => 'web'],
-            ['name' => 'Delete Device', 'guard_name' => 'web'],
-            ['name' => 'Assign Device', 'guard_name' => 'web'],
-            ['name' => 'Unassign Device', 'guard_name' => 'web']
+            ['name' => 'Root Node'],
+            ['name' => 'Add Node'],
+            ['name' => 'Update Node'],
+            ['name' => 'Delete Node'],
+            ['name' => 'Assign Node'],
+            ['name' => 'Unassign Node'],
+            ['name' => 'Create Device'],
+            ['name' => 'Update Device'],
+            ['name' => 'Delete Device'],
+            ['name' => 'Assign Device'],
+            ['name' => 'Unassign Device'],
         ];
 
         // Create the permissions
-        foreach ($permissions as $permission) {
-            Permission::create($permission);
+        foreach ($permissions as $permissionData) {
+            $permission = new Permission();
+            $permission->name = $permissionData['name'];
+            $permission->save();
         }
     }
 }

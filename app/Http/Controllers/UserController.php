@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\Permission;
 use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,6 +99,13 @@ class UserController extends Controller
             return response()->json(['error' => 'An error occurred during login'], 500);
         }
     }
+    public function getRoles($request) {
+        $roles = Role::all();
+        if ($roles->isEmpty()) {
+            return response()->json(['message' => 'No roles found'], 404);
+        }
+        return response()->json(['roles' => $roles], 200);
+    }
     public function assignRole($request)
     {
         $validator = Validator::make($request->all(), [
@@ -172,6 +180,13 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json(['error' => 'An error occurred during assign role'], 500);
         }
+    }
+    public function getPermissions($request) {
+        $roles = Permission::all();
+        if ($roles->isEmpty()) {
+            return response()->json(['message' => 'No permissions found'], 404);
+        }
+        return response()->json(['permissions' => $roles], 200);
     }
     public function createDevice($request)
     {

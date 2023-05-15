@@ -17,8 +17,10 @@ use App\Http\Controllers\APIRoleController;
 */
 
 Route::group(['middleware' => 'jwt'], function () {
+    Route::get('/getRoles', [APIRoleController::class, 'getRoles'])->name('getRoles');
     Route::post('/assignRole', [APIRoleController::class, 'assignRole'])->name('assignRole');
     Route::post('/unassignRole', [APIRoleController::class, 'unassignRole'])->name('unassignRole');
+    Route::get('/getPermissions', [APIRoleController::class, 'getPermissions'])->name('getPermissions');
     Route::post('/createDevice', [APIRoleController::class, 'createDevice'])->name('createDevice');
 });
 Route::post('/signup', [UserController::class, 'signup'])->name('signup');

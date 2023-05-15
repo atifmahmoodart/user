@@ -9,6 +9,15 @@ use App\Helpers;
 
 class APIRoleController extends Controller
 {
+    public function getRoles(Request $request)
+    {
+        $role = 'Super User';
+        $result = Helpers\hasRole($role);
+        if ($result) {
+            return app(UserController::class)->getRoles($request);
+        }
+        return response()->json(['message' => 'Role denied'], 403);
+    }
     public function assignRole(Request $request)
     {
         $role = 'Super User';
@@ -24,6 +33,15 @@ class APIRoleController extends Controller
         $result = Helpers\hasRole($role);
         if ($result) {
             return app(UserController::class)->unassignRole($request);
+        }
+        return response()->json(['message' => 'Role denied'], 403);
+    }
+    public function getPermissions(Request $request)
+    {
+        $role = 'Super User';
+        $result = Helpers\hasRole($role);
+        if ($result) {
+            return app(UserController::class)->getPermissions($request);
         }
         return response()->json(['message' => 'Role denied'], 403);
     }
