@@ -188,6 +188,11 @@ class UserController extends Controller
         }
         return response()->json(['permissions' => $roles], 200);
     }
+    /**
+     * To Check Permission in order to access this function
+     * Can add function for practice that can be
+     * updateDevice, deleteDevice & assignDevice 
+     */
     public function createDevice($request)
     {
         $validator = Validator::make($request->all(), [
